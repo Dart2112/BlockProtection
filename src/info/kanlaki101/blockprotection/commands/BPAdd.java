@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPAdd implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPAdd(BlockProtection instance) {
 		pl = instance;
 	}
@@ -47,7 +47,7 @@ public class BPAdd implements CommandExecutor {
 					p.sendMessage(YELLOW + args[0] + " is already on your friends list.");
 					return true;
 				}
-				BPConfigHandler.getFriendslist(player).add(0, args[0]); //Add player to their friends list
+				BPConfigHandler.getFriendslist(player).add(args[0]); //Add player to their friends list
 			}
 			p.sendMessage(YELLOW + args[0] + " has been added to your friends list.");
 			BPConfigHandler.saveFriendsList(); //Save

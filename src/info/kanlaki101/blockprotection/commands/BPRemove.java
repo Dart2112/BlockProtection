@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPRemove implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPRemove(BlockProtection instance) {
 		pl = instance;
 	}

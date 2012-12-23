@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPAdmin implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPAdmin(BlockProtection instance) {
 		pl = instance;
 	}
@@ -24,7 +24,7 @@ public class BPAdmin implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			String player = p.getName();
-			String bpp = pl.prefix + player;
+			String bpp = player;
 			if (!pl.isAuthorized(p, "bp.admin")) { //No permissions
 				p.sendMessage(YELLOW + noperm);
 				if (BPConfigHandler.advLog() == true) pl.log.warning(bpp + " attempted to use command: 'bpadmin'."); //Log attempted use of command

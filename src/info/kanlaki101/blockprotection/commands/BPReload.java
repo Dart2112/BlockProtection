@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPReload implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPReload(BlockProtection instance) {
 		pl = instance;
 	}
@@ -27,9 +27,9 @@ public class BPReload implements CommandExecutor {
 			}
 			else {
 				Player p = (Player) sender;
-				String bpp = pl.prefix + p.getName();
+				String bpp = p.getName();
 				if (p.hasPermission("bp.reload")) { //No permissions
-					p.sendMessage(YELLOW + pl.prefix + "Reloaded from config.");
+					p.sendMessage(YELLOW + "[BlockProtection] Reloaded from config.");
 					BPConfigHandler.loadConfig(); //Reload settings from the config.yml file
 					pl.log.info(bpp +" reloaded config.");
 				}

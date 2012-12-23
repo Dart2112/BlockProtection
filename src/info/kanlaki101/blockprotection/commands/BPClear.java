@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPClear implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPClear(BlockProtection instance) {
 		pl = instance;
 	}
@@ -40,6 +40,6 @@ public class BPClear implements CommandExecutor {
 				BPConfigHandler.saveFriendsList(); //Save friends list
 			}
 		}
-	return true;
+		return true;
 	}
 }

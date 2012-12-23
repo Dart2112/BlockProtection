@@ -26,7 +26,7 @@ public class BPTool implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			String player = p.getName();
-			String bpp = pl.prefix + player;
+			String bpp = player;
 			
 			BPConfigHandler.loadConfig();
 			if (!pl.isAuthorized(p, "bp.admin")) { //No permissions

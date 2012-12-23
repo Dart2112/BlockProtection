@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BPList implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
 	public BPList(BlockProtection instance) {
 		pl = instance;
 	}
