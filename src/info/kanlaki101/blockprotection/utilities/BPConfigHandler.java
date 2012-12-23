@@ -111,8 +111,8 @@ public class BPConfigHandler {
 		return config.getBoolean("advlog"); 
 	}
 	
-	public static List<Object> getBlacklist() {
-		return config.getList("blacklist");
+	public static List<Integer> getBlacklist() {
+		return config.getIntegerList("blacklist");
 	}
 	
 	public static int getUtilTool() {
@@ -123,8 +123,8 @@ public class BPConfigHandler {
 	 * Pull information from a player's friends list
 	 */
 	
-	public static List<Object> getFriendslist(String player) {
-		return friendslist.getList(player);
+	public static List<String> getFriendslist(String player) {
+		return friendslist.getStringList(player);
 	}
 	
 }

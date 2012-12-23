@@ -3,21 +3,24 @@ package info.kanlaki101.blockprotection.listeners;
 import info.kanlaki101.blockprotection.BlockProtection;
 import info.kanlaki101.blockprotection.utilities.BPBlockLocation;
 import info.kanlaki101.blockprotection.utilities.BPConfigHandler;
+import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-public class BPBlockListener extends BlockListener {
-	public static BlockProtection pl;
+public class BPBlockListener implements Listener {
+	BlockProtection pl;
 
 	public BPBlockListener(BlockProtection instance) {
 		pl = instance;
 	}
 	
+	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
 		String player = e.getPlayer().getName();
 		
@@ -26,40 +29,39 @@ public class BPBlockListener extends BlockListener {
 			int blockID = block.getTypeId();
 			if (!BPConfigHandler.getBlacklist().contains(blockID)) { //Check is the block is in the exclude list
 				BPBlockLocation blockLoc = new BPBlockLocation(block);
-				pl.database.put(blockLoc, e.getPlayer().getName()); //Saves block to the database
+				pl.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, e.getPlayer().getName());
+//				pl.database.put(blockLoc, e.getPlayer().getName()); //Saves block to the database
 			}
 		}
 	}
 	
+	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {	
 		Block block = e.getBlock();
 		BPBlockLocation blockLoc = new BPBlockLocation(block);
 		Player p = e.getPlayer();
-		String player = p.getName();
-		String blockowner = pl.database.get(blockLoc);
+		WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
 		
-		if (pl.database.containsKey(blockLoc)) { //Checks to see if the block is in the database
-			if (!pl.database.get(blockLoc).equals(player)) { //If player trying to destroy the block isn't the owner
-				
+		if (database.containsKey(blockLoc)) { //Checks to see if the block is in the database
+			String player = p.getName();
+			String blockowner = database.get(blockLoc);
+			if (!blockowner.equals(player)) { //If player trying to destroy the block isn't the owner
 				if (!(BPConfigHandler.getFriendslist(blockowner) == null)) { //Check if block owner has a friends list
 					if (BPConfigHandler.getFriendslist(blockowner).contains(player)) {
-						pl.database.remove(blockLoc); //Allow player to break block
-					}
-					else {
+						database.remove(blockLoc); //Allow player to break block
+						return;
+					} else {
 						e.setCancelled(true); //Cancel the block break. Player is not owner or friend
 						p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
 					}
-				}
-				else if (pl.UsersBypass.contains(player)) { //Is player has admin bypass enabled
-					pl.database.remove(blockLoc); //Allows player to break block and removes it from the database
-				}
-				else {							
+				} else if (pl.UsersBypass.contains(player)) { //Is player has admin bypass enabled
+					database.remove(blockLoc); //Allows player to break block and removes it from the database
+				} else {							
 					e.setCancelled(true); //Cancel the block break. Player is not owner, friends, or does not have permission to ignore ownership
 					p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
 				} 
-			}
-			else //Player is owner of the block
-				pl.database.remove(blockLoc); //Break the block and remove it from the database
+			} else //Player is owner of the block
+				database.remove(blockLoc); //Break the block and remove it from the database
 		}
 		
 		/*
