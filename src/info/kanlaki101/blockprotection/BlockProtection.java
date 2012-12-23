@@ -7,14 +7,17 @@ import info.kanlaki101.blockprotection.commands.BPClear;
 import info.kanlaki101.blockprotection.commands.BPList;
 import info.kanlaki101.blockprotection.commands.BPReload;
 import info.kanlaki101.blockprotection.commands.BPRemove;
+import info.kanlaki101.blockprotection.commands.BPSave;
 import info.kanlaki101.blockprotection.commands.BPTool;
 import info.kanlaki101.blockprotection.listeners.BPBlockListener;
 import info.kanlaki101.blockprotection.listeners.BPPlayerListener;
+import info.kanlaki101.blockprotection.listeners.WorldListener;
 import info.kanlaki101.blockprotection.utilities.BPConfigHandler;
 import info.kanlaki101.blockprotection.utilities.BPDatabase;
+import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,51 +25,57 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockProtection extends JavaPlugin {
 	
-	public final Logger log = Logger.getLogger("Minecraft");
-	private final BPBlockListener blockListener = new BPBlockListener(this);
-	private final BPPlayerListener playerListener = new BPPlayerListener(this);
-	public final BPConfigHandler configHandler = new BPConfigHandler(this);
+	public Logger log;
+	private BPBlockListener blockListener = new BPBlockListener(this);
+	private BPPlayerListener playerListener = new BPPlayerListener(this);
+	private WorldListener wListener = new WorldListener(this);
+	public BPConfigHandler configHandler = new BPConfigHandler(this);
+	public HashMap<String, WorldDatabase> worldDatabases = new HashMap<String, WorldDatabase>();
 	public List<String> Users = new ArrayList<String>();
 	public List<String> UsersBypass = new ArrayList<String>();
 	public BPDatabase database;
     public Permission permission = null;
-    public String prefix = "[BlockProtection] ";
 	
+    @Override
+    public void onLoad() {
+    	this.log = this.getLogger();
+    }
+    
 	public void onEnable() {
-		/*
-		 * Create/Load config.yml and friendslist.yml
-		 */
+		setupConfiguration();
+		setupPermissions();
+		setupDatabase();
+		registerListeners();
+		registerCommands();
+		
+		log.info("Enabling...");
+	}
+
+	private void setupConfiguration() {
 		configHandler.setupConfig();
 		configHandler.setupFriendslist();
-		
-		//Setup permissions via Vault
-		setupPermissions();
-	    
-	    //Start the database
-	    File dbFile = new File(getDataFolder(), "database.db"); 
-		database = new BPDatabase(this, dbFile);
-		
+	}
+
+	private void setupDatabase() {
+		database = new BPDatabase(this);
+		database.registerDatabases();
 		database.scheduleAutosave();
-		
-		/*
-		 * Register events from the block/player listener
-		 */
+	}
+
+	private void registerListeners() {
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
-		/*
-		 * Register commands from both command classes
-		 */
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(playerListener, this);
+		pm.registerEvents(wListener, this);
+	}
+
+	private void registerCommands() {
 		getCommand("bp").setExecutor(new BP(this));
 		getCommand("bpadmin").setExecutor(new BPAdmin(this));
 		getCommand("bpreload").setExecutor(new BPReload(this));
@@ -75,13 +84,13 @@ public class BlockProtection extends JavaPlugin {
 		getCommand("bplist").setExecutor(new BPList(this));
 		getCommand("bptool").setExecutor(new BPTool(this));
 		getCommand("bpclear").setExecutor(new BPClear(this));
-		log.info(prefix + "Enabling...");
+		getCommand("bpsave").setExecutor(new BPSave(this));
 	}
 
 	public void onDisable() {
-		log.info(prefix + "Database saving...");
+		log.info("Database saving...");
 		database.close();
-		log.info(prefix + "Disabling...");
+		log.info("Disabling...");
 	}
     
     public Boolean setupPermissions() { //Check for permissions plugin (VAULT)
