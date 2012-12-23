@@ -40,6 +40,9 @@ Commands:
 
 		* bptool:
 			Gives the player 1 of the "utility tool"
+		
+		* bpsave:
+			Saves the current database to it's file
  
 Permissions:
 --
@@ -58,7 +61,10 @@ Permissions:
 
 Credits:
 -
-		BlockProtection was made from the ashes of an inactive plugin called OwnBlocks by cvenomz.
+		Kanlaki101: BlockProtection was made from the ashes of an inactive plugin called OwnBlocks by cvenomz.
 		I have attempted to fix up/recode as much as possible to keep up with the changes to Bukkit.
 		All existing code is credited to cvenomz.
+		
+		Blackwolf12333: I edited this plugin to work with the latest versions of bukkit, but the biggest part
+		of the source is written by Kanlaki101 and cvenomz.
 
