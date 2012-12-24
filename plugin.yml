@@ -1,7 +1,7 @@
 name: BlockProtection
 main: info.kanlaki101.blockprotection.BlockProtection
-version: 2.5.3
-author: Kanlaki101
+version: 3.0.0
+author: Kanlaki101, blackwolf12333
 depend: [Vault]
 
 commands:
