@@ -24,13 +24,12 @@ public class BPBlockListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent e) {
 		String player = e.getPlayer().getName();
 		
-		if (pl.Users.contains(player)) { //Checks if user has BlockProctection enabled/disabled
+		if (pl.Users.contains(player)) {
 			Block block = e.getBlockPlaced();
 			int blockID = block.getTypeId();
-			if (!BPConfigHandler.getBlacklist().contains(blockID)) { //Check is the block is in the exclude list
+			if (!BPConfigHandler.getBlacklist().contains(blockID)) {
 				BPBlockLocation blockLoc = new BPBlockLocation(block);
 				pl.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, e.getPlayer().getName());
-//				pl.database.put(blockLoc, e.getPlayer().getName()); //Saves block to the database
 			}
 		}
 	}
@@ -42,26 +41,26 @@ public class BPBlockListener implements Listener {
 		Player p = e.getPlayer();
 		WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
 		
-		if (database.containsKey(blockLoc)) { //Checks to see if the block is in the database
+		if (database.containsKey(blockLoc)) {
 			String player = p.getName();
 			String blockowner = database.get(blockLoc);
-			if (!blockowner.equals(player)) { //If player trying to destroy the block isn't the owner
-				if (!(BPConfigHandler.getFriendslist(blockowner) == null)) { //Check if block owner has a friends list
+			if (!blockowner.equals(player)) {
+				if (!(BPConfigHandler.getFriendslist(blockowner) == null)) {
 					if (BPConfigHandler.getFriendslist(blockowner).contains(player)) {
-						database.remove(blockLoc); //Allow player to break block
+						database.remove(blockLoc);
 						return;
 					} else {
-						e.setCancelled(true); //Cancel the block break. Player is not owner or friend
+						e.setCancelled(true);
 						p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
 					}
-				} else if (pl.UsersBypass.contains(player)) { //Is player has admin bypass enabled
-					database.remove(blockLoc); //Allows player to break block and removes it from the database
+				} else if (pl.UsersBypass.contains(player)) {
+					database.remove(blockLoc);
 				} else {							
-					e.setCancelled(true); //Cancel the block break. Player is not owner, friends, or does not have permission to ignore ownership
+					e.setCancelled(true);
 					p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
 				} 
-			} else //Player is owner of the block
-				database.remove(blockLoc); //Break the block and remove it from the database
+			} else
+				database.remove(blockLoc);
 		}
 		
 		/*
