@@ -3,7 +3,6 @@ package info.kanlaki101.blockprotection.utilities;
 import info.kanlaki101.blockprotection.BlockProtection;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,9 +15,7 @@ import org.bukkit.World;
  */
 public class BPDatabase {
 
-	Logger log;
 	BlockProtection plugin;
-	String prefix = "[BlockProtection] ";
 	
 	// File f is the database file
 	public BPDatabase(BlockProtection plugin) {
@@ -30,9 +27,9 @@ public class BPDatabase {
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
 			public void run() {
-				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + prefix + "Saving database. Expect some lag ...");
+				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "[BlockProtection] Saving database. Expect some lag ...");
 				save();
-				log.info(prefix + "Database saved.");
+				plugin.log.info("Database saved.");
 				
 			}
 			
