@@ -107,6 +107,10 @@ public class BPConfigHandler {
 		return config.getBoolean("enable-bypass-by-default");
 	}
 	
+	public static boolean allowPlacingAbove() {
+		return config.getBoolean("allow-placing-next-to-blocks");
+	}
+	
 	public static boolean advLog() {
 		return config.getBoolean("advlog"); 
 	}

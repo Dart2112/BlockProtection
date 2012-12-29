@@ -9,6 +9,8 @@ enable-by-default: true
 # when they need to remove a players block.
 # Default: false
 enable-bypass-by-default: false
+
+allow-placing-next-to-blocks: true
 # ==================================================================================
 # The items listed below will not be protected.
 # You MUST use item ids.

@@ -7,6 +7,7 @@ import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,9 +24,12 @@ public class BPBlockListener implements Listener {
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
 		String player = e.getPlayer().getName();
+		Block block = e.getBlockPlaced();
+		if(!BPConfigHandler.allowPlacingAbove()) {
+			if(isNearProtectedBlock(block, player)) e.setCancelled(true);
+		}
 		
 		if (pl.Users.contains(player)) {
-			Block block = e.getBlockPlaced();
 			int blockID = block.getTypeId();
 			if (!BPConfigHandler.getBlacklist().contains(blockID)) {
 				BPBlockLocation blockLoc = new BPBlockLocation(block);
@@ -34,6 +38,42 @@ public class BPBlockListener implements Listener {
 		}
 	}
 	
+	private boolean isNearProtectedBlock(Block b, String player) {
+		BlockFace[] faces = new BlockFace[] {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH,
+				BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST, BlockFace.WEST, BlockFace.EAST};
+		for(BlockFace face : faces) {
+			Block relative = b.getRelative(face);
+			if(isProtected(relative, player)) return true;
+		}
+		return false;
+	}
+
+	private boolean isProtected(Block relative, String player) {
+		BPBlockLocation blockLoc = new BPBlockLocation(relative);
+		WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
+		if(database.containsKey(blockLoc)) {
+			String blockowner = database.get(blockLoc);
+			if(!blockowner.equals(player)) {
+				if(!isFriendOf(player, blockowner)) {
+					if (pl.UsersBypass.contains(player)) {
+						return false;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean isFriendOf(String player, String owner) {
+		if(!(BPConfigHandler.getFriendslist(owner) == null)) {
+			if(BPConfigHandler.getFriendslist(owner).contains(player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {	
 		Block block = e.getBlock();
@@ -45,17 +85,10 @@ public class BPBlockListener implements Listener {
 			String player = p.getName();
 			String blockowner = database.get(blockLoc);
 			if (!blockowner.equals(player)) {
-				if (!(BPConfigHandler.getFriendslist(blockowner) == null)) {
-					if (BPConfigHandler.getFriendslist(blockowner).contains(player)) {
-						database.remove(blockLoc);
-						return;
-					} else {
-						e.setCancelled(true);
-						p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
-					}
-				} else if (pl.UsersBypass.contains(player)) {
+				if (isFriendOf(player, blockowner) || pl.UsersBypass.contains(player)) {
 					database.remove(blockLoc);
-				} else {							
+					return;
+				} else {
 					e.setCancelled(true);
 					p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
 				} 
