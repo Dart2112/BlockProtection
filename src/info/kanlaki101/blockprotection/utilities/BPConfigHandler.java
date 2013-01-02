@@ -123,6 +123,14 @@ public class BPConfigHandler {
 		return config.getInt("utility-tool");
 	}
 	
+	public static boolean isDisabledWorld(String world) {
+		return config.getStringList("disabled-worlds").contains(world);
+	}
+	
+	public static boolean disableBroadCast() {
+		return config.getBoolean("disable-broadcast");
+	}
+	
 	/*
 	 * Pull information from a player's friends list
 	 */

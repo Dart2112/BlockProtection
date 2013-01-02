@@ -27,10 +27,13 @@ public class BPDatabase {
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
 			public void run() {
-				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "[BlockProtection] Saving database. Expect some lag ...");
-				save();
+				if(BPConfigHandler.disableBroadCast()) {
+					save();
+				} else {
+					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "[BlockProtection] Saving database. Expect some lag ...");
+					save();
+				}
 				plugin.log.info("Database saved.");
-				
 			}
 			
 		}, time * 20L, time * 20L);

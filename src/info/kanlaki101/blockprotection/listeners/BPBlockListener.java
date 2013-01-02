@@ -23,17 +23,19 @@ public class BPBlockListener implements Listener {
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
-		String player = e.getPlayer().getName();
-		Block block = e.getBlockPlaced();
-		if(!BPConfigHandler.allowPlacingAbove()) {
-			if(isNearProtectedBlock(block, player)) e.setCancelled(true);
-		}
-		
-		if (pl.Users.contains(player)) {
-			int blockID = block.getTypeId();
-			if (!BPConfigHandler.getBlacklist().contains(blockID)) {
-				BPBlockLocation blockLoc = new BPBlockLocation(block);
-				pl.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, e.getPlayer().getName());
+		if(!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())) {
+			String player = e.getPlayer().getName();
+			Block block = e.getBlockPlaced();
+			if(!BPConfigHandler.allowPlacingAbove()) {
+				if(isNearProtectedBlock(block, player)) e.setCancelled(true);
+			}
+			
+			if (pl.Users.contains(player)) {
+				int blockID = block.getTypeId();
+				if (!BPConfigHandler.getBlacklist().contains(blockID)) {
+					BPBlockLocation blockLoc = new BPBlockLocation(block);
+					pl.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, e.getPlayer().getName());
+				}
 			}
 		}
 	}
@@ -75,25 +77,27 @@ public class BPBlockListener implements Listener {
 	}
 
 	@EventHandler
-	public void onBlockBreak(BlockBreakEvent e) {	
-		Block block = e.getBlock();
-		BPBlockLocation blockLoc = new BPBlockLocation(block);
+	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
-		WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
-		
-		if (database.containsKey(blockLoc)) {
-			String player = p.getName();
-			String blockowner = database.get(blockLoc);
-			if (!blockowner.equals(player)) {
-				if (isFriendOf(player, blockowner) || pl.UsersBypass.contains(player)) {
+		if(!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())) {
+			Block block = e.getBlock();
+			BPBlockLocation blockLoc = new BPBlockLocation(block);
+			WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
+			
+			if (database.containsKey(blockLoc)) {
+				String player = p.getName();
+				String blockowner = database.get(blockLoc);
+				if (!blockowner.equals(player)) {
+					if (isFriendOf(player, blockowner) || pl.UsersBypass.contains(player)) {
+						database.remove(blockLoc);
+						return;
+					} else {
+						e.setCancelled(true);
+						p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
+					} 
+				} else
 					database.remove(blockLoc);
-					return;
-				} else {
-					e.setCancelled(true);
-					p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
-				} 
-			} else
-				database.remove(blockLoc);
+			}
 		}
 		
 		/*

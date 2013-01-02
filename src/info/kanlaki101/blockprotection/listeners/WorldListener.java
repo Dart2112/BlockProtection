@@ -3,6 +3,7 @@ package info.kanlaki101.blockprotection.listeners;
 import java.io.File;
 
 import info.kanlaki101.blockprotection.BlockProtection;
+import info.kanlaki101.blockprotection.utilities.BPConfigHandler;
 import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
 import org.bukkit.event.EventHandler;
@@ -21,8 +22,10 @@ public class WorldListener implements Listener {
 	@EventHandler
 	public void onWorldLoad(WorldLoadEvent event) {
 		String world = event.getWorld().getName();
-		File dbFile = new File(plugin.getDataFolder(), world+".db");
-		plugin.worldDatabases.put(world, new WorldDatabase(dbFile, plugin));
+		if(!BPConfigHandler.isDisabledWorld(world)) {
+			File dbFile = new File(plugin.getDataFolder(), world+".db");
+			plugin.worldDatabases.put(world, new WorldDatabase(dbFile, plugin));
+		}
 	}
 	
 	@EventHandler

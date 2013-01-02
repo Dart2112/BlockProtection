@@ -10,7 +10,14 @@ enable-by-default: true
 # Default: false
 enable-bypass-by-default: false
 
+disable-broadcast: false
+
 allow-placing-next-to-blocks: true
+
+# This will disable block protection by default in these worlds
+disabled-worlds:
+  - world_nether
+  - world_the_end
 # ==================================================================================
 # The items listed below will not be protected.
 # You MUST use item ids.
