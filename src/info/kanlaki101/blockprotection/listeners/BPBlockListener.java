@@ -12,16 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 
 public class BPBlockListener implements Listener {
 	BlockProtection pl;
-
 	public BPBlockListener(BlockProtection instance) {
 		pl = instance;
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent e) {
 		if(!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())) {
 			String player = e.getPlayer().getName();
@@ -39,8 +40,8 @@ public class BPBlockListener implements Listener {
 			}
 		}
 	}
-	
-	private boolean isNearProtectedBlock(Block b, String player) {
+
+    private boolean isNearProtectedBlock(Block b, String player) {
 		BlockFace[] faces = new BlockFace[] {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH,
 				BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST, BlockFace.WEST, BlockFace.EAST};
 		for(BlockFace face : faces) {
@@ -76,7 +77,7 @@ public class BPBlockListener implements Listener {
 		return false;
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		if(!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())) {
@@ -93,13 +94,12 @@ public class BPBlockListener implements Listener {
 						return;
 					} else {
 						e.setCancelled(true);
-						p.sendMessage(ChatColor.YELLOW + "You can not break blocks owned by: " + blockowner);
+						p.sendMessage(ChatColor.YELLOW + BPConfigHandler.owned() + blockowner);
 					} 
 				} else
 					database.remove(blockLoc);
 			}
-		}
-		
+        }
 		/*
 		*Check if the player is holding the "utility-tool" and has the admin permission. If so, do not let him break blocks"
 		*This is used for things that break instantly (redstone, saplings, etc)
@@ -108,4 +108,31 @@ public class BPBlockListener implements Listener {
 			if (pl.isAuthorized(p, "bp.admin")) e.setCancelled(true);
 		}
 	}
+
+    @EventHandler(ignoreCancelled = true)
+    public void BlockPistonRetractEvent(BlockPistonRetractEvent e) {
+        if ((e.isSticky()) && (!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())))
+        {
+            Block tb = e.getRetractLocation().getBlock();
+            BPBlockLocation blockLoc = new BPBlockLocation(tb);
+            WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
+
+            if (database.containsKey(blockLoc))
+                e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPistonExtend(BlockPistonExtendEvent event) {
+    	boolean isDisabledWorld = BPConfigHandler.isDisabledWorld(event.getBlock().getWorld().getName());
+    	if(!isDisabledWorld) {
+    		Block b = event.getBlock();
+    		BPBlockLocation loc = new BPBlockLocation(b);
+    		WorldDatabase database = pl.worldDatabases.get(loc.getWorld());
+    		if(database.containsKey(loc)) {
+    			event.setCancelled(true);
+    		}
+    	}
+    }
+
 }

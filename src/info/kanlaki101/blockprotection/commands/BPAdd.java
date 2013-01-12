@@ -39,7 +39,7 @@ public class BPAdd implements CommandExecutor {
 				return true;
 			}
 			
-			if (BPConfigHandler.getFriendslist(player) ==  null) {
+			if (BPConfigHandler.getFriendslist(player) == null) {
 				String [] list = {args[0]};
 				BPConfigHandler.friendslist.set(player, Arrays.asList(list));
 				p.sendMessage(YELLOW + args[0] + " has been added to your friends list.");

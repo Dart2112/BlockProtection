@@ -22,9 +22,9 @@ public class WorldDatabase {
 		this.log = plugin.getLogger();
 		try {
 			if(dbFile.createNewFile())
-				log.info("Created new database file.");
+				log.info("Created new database file for " + dbFile.getName().replaceAll(".db", "") + ".");
 			else
-				log.info("Using existing database file.");
+				log.info("Using existing database file for" + dbFile.getName().replaceAll(".db", "") + ".");
 			loadDatabase();
 		} catch (IOException e) {
 			e.printStackTrace();

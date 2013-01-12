@@ -1,14 +1,7 @@
 package info.kanlaki101.blockprotection;
 
-import info.kanlaki101.blockprotection.commands.BP;
-import info.kanlaki101.blockprotection.commands.BPAdd;
-import info.kanlaki101.blockprotection.commands.BPAdmin;
-import info.kanlaki101.blockprotection.commands.BPClear;
-import info.kanlaki101.blockprotection.commands.BPList;
-import info.kanlaki101.blockprotection.commands.BPReload;
-import info.kanlaki101.blockprotection.commands.BPRemove;
-import info.kanlaki101.blockprotection.commands.BPSave;
-import info.kanlaki101.blockprotection.commands.BPTool;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import info.kanlaki101.blockprotection.commands.*;
 import info.kanlaki101.blockprotection.listeners.BPBlockListener;
 import info.kanlaki101.blockprotection.listeners.BPPlayerListener;
 import info.kanlaki101.blockprotection.listeners.WorldListener;
@@ -41,7 +34,9 @@ public class BlockProtection extends JavaPlugin {
 	public List<String> UsersBypass = new ArrayList<String>();
 	public BPDatabase database;
     public Permission permission = null;
-	
+    public String GPlayer = "";
+    public WorldEditPlugin worldEdit;
+
     @Override
     public void onLoad() {
     	this.log = this.getLogger();
@@ -53,8 +48,15 @@ public class BlockProtection extends JavaPlugin {
 		setupDatabase();
 		registerListeners();
 		registerCommands();
+		checkWorldEdit();
 		
 		log.info("Enabling...");
+	}
+
+	private void checkWorldEdit() {
+		WorldEditPlugin wePlugin = (WorldEditPlugin)getServer().getPluginManager().getPlugin("WorldEdit");
+        if (wePlugin != null)
+        	worldEdit = wePlugin;
 	}
 
 	private void setupConfiguration() {
@@ -85,6 +87,8 @@ public class BlockProtection extends JavaPlugin {
 		getCommand("bptool").setExecutor(new BPTool(this));
 		getCommand("bpclear").setExecutor(new BPClear(this));
 		getCommand("bpsave").setExecutor(new BPSave(this));
+		getCommand("bpgive").setExecutor(new BPGive(this));
+        getCommand("bptransfer").setExecutor(new BPTransfer(this));
 	}
 
 	public void onDisable() {

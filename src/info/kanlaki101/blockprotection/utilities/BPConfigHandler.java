@@ -1,5 +1,7 @@
 package info.kanlaki101.blockprotection.utilities;
 
+import info.kanlaki101.blockprotection.BlockProtection;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,8 +11,6 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import info.kanlaki101.blockprotection.*;
 
 public class BPConfigHandler {
 	
@@ -102,6 +102,10 @@ public class BPConfigHandler {
 	public static boolean enableByDefault() {
 		return config.getBoolean("enable-by-default");
 	}
+
+    public static String owned() {
+        return config.getString("owned");
+    }
 	
 	public static boolean bypassByDefault() {
 		return config.getBoolean("enable-bypass-by-default");
