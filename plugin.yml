@@ -1,7 +1,7 @@
 name: BlockProtection
 main: info.kanlaki101.blockprotection.BlockProtection
-version: 3.0.2
-author: Kanlaki101, blackwolf12333
+version: 3.0.4
+author: Kanlaki101, blackwolf12333 , LiD
 depend: [Vault]
 
 commands:
@@ -32,6 +32,12 @@ commands:
   bpsave:
     description: Saves the database
     usage: /<command>
+  bpgive:
+    description: Gives Block
+    usage: /<command>
+  bptransfer:
+    description: Transfer Block
+    usage: /<command>
     
 permissions:
     bp.*:
@@ -52,4 +58,11 @@ permissions:
         default: op        
     bp.user:
         description: Allows players to view a blocks owner, and have their blocks protected
-        default: true         
+        default: true 
+    bp.giveblock:
+        description: Allows give block
+        default: true
+    bp.transfer:
+        description: Transfer blocks from WorldEdit selected region
+        default: true
+         

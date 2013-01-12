@@ -8,11 +8,11 @@ enable-by-default: true
 # automatically when they join the server. Set to false to make them type /bpadmin
 # when they need to remove a players block.
 # Default: false
-enable-bypass-by-default: false
+enable-bypass-by-default: true
 
 disable-broadcast: false
 
-allow-placing-next-to-blocks: true
+allow-placing-next-to-blocks: false
 
 # This will disable block protection by default in these worlds
 disabled-worlds:
@@ -45,3 +45,5 @@ save-interval: 60
 # also shows if players without the correct permissions are trying to use the admin
 # commands. Set to true to display in console/save to log. Default: true
 advlog: true
+
+owned: "Блок пренадлежит :"
