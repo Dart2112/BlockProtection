@@ -2,7 +2,8 @@ BlockProtection:
 =
 		A block protection plugin based off of OwnBlocks by cvenomz. 
 		This plugin will protect blocks placed by players. 
-		Only the player who placed the block, anyone on his friends list, or an admin can break the block. 
+		Only the player who placed the block, anyone on his friends list, 
+		or an admin can break the block. 
 
 Features:
 --
