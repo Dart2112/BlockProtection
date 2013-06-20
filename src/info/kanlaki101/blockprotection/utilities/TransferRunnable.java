@@ -26,11 +26,11 @@ public class TransferRunnable implements Runnable {
         final Selection select = pl.worldEdit.getSelection(p);
         final World world = p.getWorld();
 
-		if(transferTo != null) {
-			p.sendMessage(ChatColor.RED + " [BProtect] Starting Transfer of Ownership. This may take a bit.");
-		} else {
-			p.sendMessage(ChatColor.RED + " [BProtect] Starting cleanup of selected area. This may take a bit.");
-		}
+	if(transferTo != null) {
+		p.sendMessage(ChatColor.RED + " [BProtect] Starting Transfer of Ownership. This may take a bit.");
+	} else {
+		p.sendMessage(ChatColor.RED + " [BProtect] Starting cleanup of selected area. This may take a bit.");
+	}
         Location max = select.getMaximumPoint();
         Location min = select.getMinimumPoint();
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
