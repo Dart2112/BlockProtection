@@ -15,27 +15,47 @@ public class BP implements CommandExecutor {
 	}
 		
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		String noperm = "You do not have permission to use this command.";
-		ChatColor YELLOW = ChatColor.YELLOW;
-		
-		if (args.length > 0) return true;
-		
 		if (cmd.getName().equalsIgnoreCase("bp")) {
-			if (!(sender instanceof Player)) return true;
+			if (!(sender instanceof Player)) {
+				sender.sendMessage(ChatColor.YELLOW + "You have to be a player to use this command");
+				return true;
+			}
+			if (!pl.isAuthorized(sender, "bp.user")) {
+				sender.sendMessage(ChatColor.YELLOW + "You do not have permission to use this command.");
+				return true;
+			}
 			
 			Player p = (Player) sender;
 			String player = p.getName();
-			if (!pl.isAuthorized(p, "bp.user")) { //No permissions
-				p.sendMessage(YELLOW + noperm);
+			
+			if (args.length == 1) {
+				if(args[0].equalsIgnoreCase("on")) {
+					if(pl.Users.contains(player)) {
+						p.sendMessage(ChatColor.YELLOW + "BlockProtection is already on!");
+						return true;
+					} else {
+						p.sendMessage(ChatColor.YELLOW + "BlockProtection is turned on now!");
+						pl.Users.add(player);
+					}
+				} else if(args[0].equalsIgnoreCase("off")) {
+					if(pl.Users.contains(player)) {
+						p.sendMessage(ChatColor.YELLOW + "BlockProtection is turned off now!");
+						pl.Users.remove(player);
+					} else {
+						p.sendMessage(ChatColor.YELLOW + "BlockProtection is already off!");
+						return true;
+					}
+				}
 				return true;
 			}
-			if (pl.Users.contains(player)) { //Check for the player in the protection array
-				pl.Users.remove(player); //Remove player from the array list and stop protecting their blocks
-				p.sendMessage(YELLOW + "Your blocks are no longer protected!");
+			
+			if (pl.Users.contains(player)) {
+				pl.Users.remove(player);
+				p.sendMessage(ChatColor.YELLOW + "Your blocks are no longer protected!");
 			} 
 			else {
-				pl.Users.add(player); //Add player to the array list and start protecting their blocks
-				p.sendMessage(YELLOW + "Your blocks are now protected!");
+				pl.Users.add(player);
+				p.sendMessage(ChatColor.YELLOW + "Your blocks are now protected!");
 			}
 		}
 		return true;
