@@ -16,28 +16,28 @@ public class BPClear implements CommandExecutor {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (!(sender instanceof Player)) return true; //Sender is not in-game
+		if (!(sender instanceof Player)) return true;
 		Player p = (Player)sender;
 		String player = p.getName();
 		String noperm = "You do not have permission to use this command.";
 		ChatColor YELLOW = ChatColor.YELLOW;
 		
-		if (args.length > 1) return true; //Too many arguments
+		if (args.length > 1) return true;
 		
 		if (cmd.getName().equalsIgnoreCase("bpclear")) {
 			BPConfigHandler.loadFriendsList();
 			if (args.length > 0) return true;
-			if (!pl.isAuthorized(p, "bp.friend")) { //No permissions
+			if (!p.hasPermission("bp.friend")) {
 				p.sendMessage(YELLOW + noperm);
 				return true;
 			}
-			if (BPConfigHandler.getFriendslist(player) == null) { //Check if player has a friends list
+			if (BPConfigHandler.getFriendslist(player) == null) {
 				p.sendMessage(YELLOW + "You do not have a friends list.");
 			}
 			else {
-				BPConfigHandler.friendslist.set(player, null); //Remove everyone from the list
+				BPConfigHandler.friendslist.set(player, null);
 				p.sendMessage(YELLOW + "Your friends list has been cleared.");
-				BPConfigHandler.saveFriendsList(); //Save friends list
+				BPConfigHandler.saveFriendsList();
 			}
 		}
 		return true;

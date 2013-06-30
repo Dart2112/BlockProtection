@@ -12,9 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BPTool implements CommandExecutor {
-	public static BlockProtection pl;
+	BlockProtection pl;
+	
 	public BPTool(BlockProtection instance) {
-		pl = instance;
+		this.pl = instance;
 	}
 		
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -29,7 +30,7 @@ public class BPTool implements CommandExecutor {
 			String bpp = player;
 			
 			BPConfigHandler.loadConfig();
-			if (!pl.isAuthorized(p, "bp.admin")) { //No permissions
+			if (!p.hasPermission("bp.admin")) { //No permissions
 				p.sendMessage(YELLOW + noperm);
 				if (BPConfigHandler.advLog() == true) pl.log.warning(bpp + " attempted to use command: 'bptool'.");
 			} 

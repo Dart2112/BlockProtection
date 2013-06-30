@@ -20,7 +20,7 @@ public class BP implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "You have to be a player to use this command");
 				return true;
 			}
-			if (!pl.isAuthorized(sender, "bp.user")) {
+			if (!sender.hasPermission("bp.user")) {
 				sender.sendMessage(ChatColor.YELLOW + "You do not have permission to use this command.");
 				return true;
 			}

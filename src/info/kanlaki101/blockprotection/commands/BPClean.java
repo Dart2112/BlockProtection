@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class BPClean extends CommandExecutor {
+public class BPClean implements CommandExecutor {
 	BlockProtection plugin;
 	
 	public BPClean(BlockProtection plugin) {
@@ -19,11 +19,12 @@ public class BPClean extends CommandExecutor {
 		if(cmd.getName().equalsIgnoreCase("bpclean")) {
 			if(sender instanceof Player) {
         		Player p = (Player) sender;
-        		if ((pl.isAuthorized(p, "bp.clean")) || (pl.isAuthorized(p, "bp.admin"))) {
-            		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new TransferRunnable(pl, p, null));
+        		if ((p.hasPermission("bp.clean")) || (p.hasPermission("bp.admin"))) {
+            		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TransferRunnable(plugin, p, null));
                     return true;
                 }
         	}
 		}
+		return true;
 	}
 }

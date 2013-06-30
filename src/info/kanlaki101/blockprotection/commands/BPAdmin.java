@@ -25,7 +25,7 @@ public class BPAdmin implements CommandExecutor {
 			Player p = (Player) sender;
 			String player = p.getName();
 			String bpp = player;
-			if (!pl.isAuthorized(p, "bp.admin")) { //No permissions
+			if (!p.hasPermission("bp.admin")) {
 				p.sendMessage(YELLOW + noperm);
 				if (BPConfigHandler.advLog() == true) pl.log.warning(bpp + " attempted to use command: 'bpadmin'."); //Log attempted use of command
 				return true;

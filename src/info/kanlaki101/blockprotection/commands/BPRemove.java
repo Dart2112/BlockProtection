@@ -26,7 +26,7 @@ public class BPRemove implements CommandExecutor {
 
 		if (cmd.getName().equalsIgnoreCase("bpremove")) {
 			BPConfigHandler.loadFriendsList();
-			if (!pl.isAuthorized(p, "bp.friend")) { //No permissions
+			if (!p.hasPermission("bp.friend")) { //No permissions
 				p.sendMessage(YELLOW + noperm);
 				return true;
 			}

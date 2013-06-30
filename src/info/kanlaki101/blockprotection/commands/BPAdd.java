@@ -30,7 +30,7 @@ public class BPAdd implements CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("bpadd")) {
 			BPConfigHandler.loadConfig();
 			BPConfigHandler.loadFriendsList();
-			if (!pl.isAuthorized(p, "bp.friend")) {
+			if (!p.hasPermission("bp.friend")) {
 				p.sendMessage(YELLOW + noperm);
 				return true;
 			}

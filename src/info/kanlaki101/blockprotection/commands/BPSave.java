@@ -21,7 +21,7 @@ public class BPSave implements CommandExecutor {
 		ChatColor YELLOW = ChatColor.YELLOW;
 		
 		if(command.getName().equalsIgnoreCase("bpsave")) {
-			if(!plugin.isAuthorized(sender, "bp.admin")) {
+			if(!sender.hasPermission("bp.admin")) {
 				sender.sendMessage(YELLOW + noperm);
 				return true;
 			} else {

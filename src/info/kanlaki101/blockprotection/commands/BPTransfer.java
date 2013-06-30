@@ -19,7 +19,7 @@ public class BPTransfer implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase("bptransfer")) {
         	if(sender instanceof Player) {
         		Player p = (Player) sender;
-        		if ((pl.isAuthorized(p, "bp.transfer")) || (pl.isAuthorized(p, "bp.admin"))) {
+        		if ((p.hasPermission("bp.transfer")) || (p.hasPermission("bp.admin"))) {
             		String player;
             		if (args.length > 0) {
             			player = args[0];
