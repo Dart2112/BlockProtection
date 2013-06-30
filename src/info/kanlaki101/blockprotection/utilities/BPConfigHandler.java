@@ -24,10 +24,8 @@ public class BPConfigHandler {
     public static File friendslistFile;
     public static FileConfiguration config;
     public static FileConfiguration friendslist;
-    
 
 	public void setupConfig() {
-		
 		configFile = new File(plugin.getDataFolder(), "config.yml");
 	    config = new YamlConfiguration();
 	    
@@ -38,7 +36,6 @@ public class BPConfigHandler {
 	}
 	
 	public void setupFriendslist() {
-		
 		friendslistFile = new File(plugin.getDataFolder(), "friendslist.yml");
 	    friendslist = new YamlConfiguration();
 		
@@ -133,6 +130,10 @@ public class BPConfigHandler {
 	
 	public static boolean disableBroadCast() {
 		return config.getBoolean("disable-broadcast");
+	}
+	
+	public static int getRemoveAfter() {
+		return config.getInt("remove-after");
 	}
 	
 	/*

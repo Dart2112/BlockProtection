@@ -24,7 +24,7 @@ public class WorldDatabase {
 			if(dbFile.createNewFile())
 				log.info("Created new database file for " + dbFile.getName().replaceAll(".db", "") + ".");
 			else
-				log.info("Using existing database file for" + dbFile.getName().replaceAll(".db", "") + ".");
+				log.info("Using existing database file for " + dbFile.getName().replaceAll(".db", "") + ".");
 			loadDatabase();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -34,12 +34,10 @@ public class WorldDatabase {
 	public void save() {
 		RandomAccessFile rf = null;
 		try {
-			// delete existing database
 			dbFile.delete();
 			
 			rf = new RandomAccessFile(dbFile, "rw");
 			
-			// helps to iterate over all blocks protected
 			Iterator<BPBlockLocation> it = database.keySet().iterator();
 			while(it.hasNext()) {
 				BPBlockLocation currBlock = it.next();
@@ -50,7 +48,7 @@ public class WorldDatabase {
 				rf.writeChars(currBlock.getWorld());
 				rf.writeChar('|');
 				rf.writeChars(database.get(currBlock));
-				rf.writeChar('\0'); // newline-termination
+				rf.writeChar('\0');
 			}
 			rf.close();
 		} catch (IOException ex) {
@@ -78,11 +76,9 @@ public class WorldDatabase {
 				String world = "";
 				String player = "";
 				char curr;
-				// loop over the worlds name, look for tab termination
 				while((curr = rf.readChar()) != '|') {
 					world += curr;
 				}
-				// loop over the player's name, look for newline termination
 				while((curr = rf.readChar()) != '\0') {
 					player += curr;
 				}

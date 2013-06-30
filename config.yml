@@ -46,4 +46,6 @@ save-interval: 60
 # commands. Set to true to display in console/save to log. Default: true
 advlog: true
 
-owned: "Блок пренадлежит :"
+owned: "protected by:"
+
+remove-after: 5

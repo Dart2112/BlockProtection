@@ -1,26 +1,42 @@
 package info.kanlaki101.blockprotection;
 
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import info.kanlaki101.blockprotection.commands.*;
+import info.kanlaki101.blockprotection.commands.BP;
+import info.kanlaki101.blockprotection.commands.BPAdd;
+import info.kanlaki101.blockprotection.commands.BPAdmin;
+import info.kanlaki101.blockprotection.commands.BPClean;
+import info.kanlaki101.blockprotection.commands.BPClear;
+import info.kanlaki101.blockprotection.commands.BPGive;
+import info.kanlaki101.blockprotection.commands.BPList;
+import info.kanlaki101.blockprotection.commands.BPReload;
+import info.kanlaki101.blockprotection.commands.BPRemove;
+import info.kanlaki101.blockprotection.commands.BPSave;
+import info.kanlaki101.blockprotection.commands.BPTool;
+import info.kanlaki101.blockprotection.commands.BPTransfer;
 import info.kanlaki101.blockprotection.listeners.BPBlockListener;
 import info.kanlaki101.blockprotection.listeners.BPPlayerListener;
 import info.kanlaki101.blockprotection.listeners.WorldListener;
 import info.kanlaki101.blockprotection.utilities.BPConfigHandler;
 import info.kanlaki101.blockprotection.utilities.BPDatabase;
+import info.kanlaki101.blockprotection.utilities.LoggedOutChecker;
 import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 public class BlockProtection extends JavaPlugin {
 	
@@ -32,8 +48,8 @@ public class BlockProtection extends JavaPlugin {
 	public HashMap<String, WorldDatabase> worldDatabases = new HashMap<String, WorldDatabase>();
 	public List<String> Users = new ArrayList<String>();
 	public List<String> UsersBypass = new ArrayList<String>();
+	public HashMap<String, Date> loggedOut = new HashMap<String, Date>();
 	public BPDatabase database;
-    public Permission permission = null;
     public String GPlayer = "";
     public WorldEditPlugin worldEdit;
 
@@ -44,13 +60,32 @@ public class BlockProtection extends JavaPlugin {
     
 	public void onEnable() {
 		setupConfiguration();
-		setupPermissions();
 		setupDatabase();
 		registerListeners();
+		setupLoggedOutPlayers();
 		registerCommands();
 		checkWorldEdit();
 		
 		log.info("Enabling...");
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setupLoggedOutPlayers() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(this.getDataFolder(), "loggedout.dat")));
+			Object obj = in.readObject();
+			if(obj instanceof HashMap<?, ?>) {
+				loggedOut = (HashMap<String, Date>) obj;
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new LoggedOutChecker(this), 4 * 60 * 20L);
 	}
 
 	private void checkWorldEdit() {
@@ -89,30 +124,23 @@ public class BlockProtection extends JavaPlugin {
 		getCommand("bpsave").setExecutor(new BPSave(this));
 		getCommand("bpgive").setExecutor(new BPGive(this));
         getCommand("bptransfer").setExecutor(new BPTransfer(this));
+        getCommand("bpclean").setExecutor(new BPClean(this));
 	}
 
 	public void onDisable() {
 		log.info("Database saving...");
 		database.close();
+		saveLoggedOutPlayers();
 		log.info("Disabling...");
 	}
-    
-    public Boolean setupPermissions() { //Check for permissions plugin (VAULT)
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
-        }
-        return (permission != null);
-    }
-	
-	public boolean isAuthorized(CommandSender sender, String node) { //Check if the sender is an OP or has the correct permissions
-		if (permission.has(sender, node) || sender.isOp()) return true;
-		return false;
+
+	private void saveLoggedOutPlayers() {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(this.getDataFolder(), "loggedout.dat")));
+			out.writeObject(loggedOut);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	public boolean isAuthorized(Player player, String node) { //Check if player is an OP or has the correct permissions
-		if (permission.has(player, node) || player.isOp()) return true;
-		return false;
-	}
-	
 }

@@ -1,7 +1,7 @@
 name: BlockProtection
 main: info.kanlaki101.blockprotection.BlockProtection
-version: 3.0.4
-author: Kanlaki101, blackwolf12333 , LiD
+version: 3.0.7-beta
+author: Kanlaki101, blackwolf12333, LiD
 depend: [Vault]
 
 commands:
@@ -38,6 +38,9 @@ commands:
   bptransfer:
     description: Transfer Block
     usage: /<command>
+  bpclean:
+    description: Cleans the selected area from any protections.
+    usage: /bpclean
     
 permissions:
     bp.*:

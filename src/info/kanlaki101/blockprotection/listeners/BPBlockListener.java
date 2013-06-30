@@ -5,16 +5,16 @@ import info.kanlaki101.blockprotection.utilities.BPBlockLocation;
 import info.kanlaki101.blockprotection.utilities.BPConfigHandler;
 import info.kanlaki101.blockprotection.utilities.WorldDatabase;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BPBlockListener implements Listener {
 	BlockProtection pl;
@@ -79,33 +79,41 @@ public class BPBlockListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
-		Player p = e.getPlayer();
 		if(!BPConfigHandler.isDisabledWorld(e.getBlock().getWorld().getName())) {
-			Block block = e.getBlock();
-			BPBlockLocation blockLoc = new BPBlockLocation(block);
+			BPBlockLocation blockLoc = new BPBlockLocation(e.getBlock());
 			WorldDatabase database = pl.worldDatabases.get(blockLoc.getWorld());
 			
 			if (database.containsKey(blockLoc)) {
-				String player = p.getName();
+				String player = e.getPlayer().getName();
 				String blockowner = database.get(blockLoc);
+				Bukkit.getLogger().info("player " + player + " owner " + blockowner);
 				if (!blockowner.equals(player)) {
-					if (isFriendOf(player, blockowner) || pl.UsersBypass.contains(player)) {
+					Bukkit.getLogger().info("player is not blockowner");
+					if (isFriendOf(player, blockowner)) {
+						Bukkit.getLogger().info("player is friend of blockowner");
+						database.remove(blockLoc);
+						return;
+					} else if(pl.UsersBypass.contains(player)) {
+						Bukkit.getLogger().info("player is bypassing blockowner");
 						database.remove(blockLoc);
 						return;
 					} else {
 						e.setCancelled(true);
-						p.sendMessage(ChatColor.YELLOW + BPConfigHandler.owned() + blockowner);
+						e.getPlayer().sendMessage(ChatColor.YELLOW + BPConfigHandler.owned() + blockowner);
 					} 
-				} else
+				} else {
+					Bukkit.getLogger().info("player is blockowner");
 					database.remove(blockLoc);
+				}
 			}
         }
+		
 		/*
-		*Check if the player is holding the "utility-tool" and has the admin permission. If so, do not let him break blocks"
-		*This is used for things that break instantly (redstone, saplings, etc)
-		*/
-		if (p.getItemInHand().getTypeId() == BPConfigHandler.getUtilTool()) {
-			if (pl.isAuthorized(p, "bp.admin")) e.setCancelled(true);
+		 *Check if the player is holding the "utility-tool" and has the admin permission. If so, do not let him break blocks"
+		 *This is used for things that break instantly (redstone, saplings, etc)
+		 */
+		if (e.getPlayer().getItemInHand().getTypeId() == BPConfigHandler.getUtilTool()) {
+			if (e.getPlayer().hasPermission("bp.admin")) e.setCancelled(true);
 		}
 	}
 

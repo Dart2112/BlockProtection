@@ -8,16 +8,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
-/*
+/**
  * Database file is saved in the following format:
  * bytes: 4 - 4 - 4 - variable (null-terminated)
  * data:  x - y - z - world - player
- */
+ **/
 public class BPDatabase {
 
 	BlockProtection plugin;
 	
-	// File f is the database file
 	public BPDatabase(BlockProtection plugin) {
 		this.plugin = plugin;
 	}

@@ -4,18 +4,18 @@ import java.io.Serializable;
 
 import org.bukkit.block.Block;
 
-public class BPBlockLocation implements Serializable{
+public class BPBlockLocation implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7539402891616033846L;
 	private int x,y,z;
 	private String world;
 	
 	
 	public BPBlockLocation(Block b) {
-		x=b.getX();
-		y=b.getY();
-		z=b.getZ();
-		world = b.getWorld().getName();
+		this.x = b.getX();
+		this.y = b.getY();
+		this.z = b.getZ();
+		this.world = b.getWorld().getName();
 	}
 	
 	public BPBlockLocation(int x, int y, int z, String world) {
@@ -25,16 +25,13 @@ public class BPBlockLocation implements Serializable{
 		this.world = world;
 	}
 	
-	public BPBlockLocation(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-	
 	public boolean equals(Object obj) {
-		BPBlockLocation o = (BPBlockLocation)obj;
-		if ((o.x == x) && (o.y == y) && (o.z == z) && world.equals(o.getWorld()))
-			return true;
+		if(obj instanceof BPBlockLocation) {
+			BPBlockLocation o = (BPBlockLocation)obj;
+			if ((o.x == x) && (o.y == y) && (o.z == z) && world.equals(o.getWorld())) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
