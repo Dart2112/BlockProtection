@@ -23,7 +23,7 @@ public class BPDatabase {
 	
 	public void scheduleAutosave() {
 		int time = plugin.getConfig().getInt("save-interval") * 60;
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 
 			public void run() {
 				if(BPConfigHandler.disableBroadCast()) {
