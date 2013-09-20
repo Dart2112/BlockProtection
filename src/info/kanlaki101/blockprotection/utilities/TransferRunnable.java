@@ -12,18 +12,18 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class TransferRunnable implements Runnable {
 
-	BlockProtection pl;
+	BlockProtection plugin;
 	Player p;
 	String transferTo;
 	
-	public TransferRunnable(BlockProtection pl, Player p, String transferTo) {
-		this.pl = pl;
+	public TransferRunnable(BlockProtection plugin, Player p, String transferTo) {
+		this.plugin = plugin;
 		this.p = p;
 		this.transferTo = transferTo;
 	}
 	
     public void run() {
-    	final Selection select = pl.worldEdit.getSelection(p);
+    	final Selection select = plugin.worldEdit.getSelection(p);
     	final World world = p.getWorld();
     	
     	if(transferTo != null) {
@@ -39,13 +39,13 @@ public class TransferRunnable implements Runnable {
     				Location loc = new Location(world, x, y, z);
     				if ((loc.getBlock().getType() != Material.AIR) && (loc.getBlock().getType() != Material.LAVA) && (loc.getBlock().getType() != Material.WATER)) {
     					BPBlockLocation blockLoc = new BPBlockLocation(x, y, z, world.getName());
-    					if (pl.worldDatabases.get(blockLoc.getWorld()).containsKey(blockLoc)) {
-    						String blockowner = pl.worldDatabases.get(blockLoc.getWorld()).get(blockLoc);
+    					if (plugin.worldDatabases.get(blockLoc.getWorld()).containsKey(blockLoc)) {
+    						String blockowner = plugin.worldDatabases.get(blockLoc.getWorld()).get(blockLoc);
     						if (blockowner != null)
-    							pl.worldDatabases.get(blockLoc.getWorld()).remove(blockLoc);
+    							plugin.worldDatabases.get(blockLoc.getWorld()).remove(blockLoc);
     					}
     					if (transferTo!=null) {
-    						pl.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, transferTo);
+    						plugin.worldDatabases.get(blockLoc.getWorld()).put(blockLoc, transferTo);
     					} else {
     						continue;
     					}

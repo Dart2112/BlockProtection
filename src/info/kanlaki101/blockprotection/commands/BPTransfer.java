@@ -20,13 +20,13 @@ public class BPTransfer implements CommandExecutor {
         	if(sender instanceof Player) {
         		Player p = (Player) sender;
         		if ((p.hasPermission("bp.transfer")) || (p.hasPermission("bp.admin"))) {
-            		String player;
+            		String transferTo;
             		if (args.length > 0) {
-            			player = args[0];
+            			transferTo = args[0];
             		} else {
-            			player = null;
+            			transferTo = null;
             		}
-            		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new TransferRunnable(pl, p, player));
+            		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new TransferRunnable(pl, p, transferTo));
                     return true;
                 }
         	}
