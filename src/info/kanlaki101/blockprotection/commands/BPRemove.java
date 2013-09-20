@@ -16,35 +16,41 @@ public class BPRemove implements CommandExecutor {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (!(sender instanceof Player)) return true; //Sender is not in-game
+		if (!(sender instanceof Player)) { 
+			sender.sendMessage("You have to be a player to use this command!");
+			return true;
+		}
 		Player p = (Player)sender;
 		String player = p.getName();
 		String noperm = "You do not have permission to use this command.";
 		ChatColor YELLOW = ChatColor.YELLOW;
 		
-		if (args.length > 1) return true; //Too many arguments
+		if (args.length > 1) {
+			sender.sendMessage("To many arguments!");
+			return true;
+		}
 
 		if (cmd.getName().equalsIgnoreCase("bpremove")) {
 			BPConfigHandler.loadFriendsList();
-			if (!p.hasPermission("bp.friend")) { //No permissions
+			if (!p.hasPermission("bp.friend")) {
 				p.sendMessage(YELLOW + noperm);
 				return true;
 			}
-			if (BPConfigHandler.friendslist.getList(player) == null) { //Check if a friends list exist for them
+			if (BPConfigHandler.friendslist.getList(player) == null) {
 				p.sendMessage(YELLOW + "You do not have a friends list.");
 				return true;
 			}
-			if (args.length == 0) { //Not enough arguments
+			if (args.length == 0) {
 				p.sendMessage(YELLOW + "You must specify a player to remove!");
 				return true;
 			}
 			
-			if (BPConfigHandler.getFriendslist(player).contains(args[0])) { //If player is already in your friends list
-				BPConfigHandler.getFriendslist(player).remove(args[0]); //Remove him
-		        if (BPConfigHandler.getFriendslist(player).isEmpty()) { //If the list is empty
-		        	BPConfigHandler.friendslist.set(player, null); //Delete it
+			if (BPConfigHandler.getFriendslist(player).contains(args[0])) {
+				BPConfigHandler.getFriendslist(player).remove(args[0]);
+		        if (BPConfigHandler.getFriendslist(player).isEmpty()) {
+		        	BPConfigHandler.friendslist.set(player, null);
 		        }
-		        BPConfigHandler.saveFriendsList(); //Save
+		        BPConfigHandler.saveFriendsList();
 		        p.sendMessage(YELLOW + args[0] + " has been removed from your friends list.");
 			} 
 			else {
