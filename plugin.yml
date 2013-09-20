@@ -2,7 +2,6 @@ name: BlockProtection
 main: info.kanlaki101.blockprotection.BlockProtection
 version: 3.0.7-beta
 author: Kanlaki101, blackwolf12333, LiD
-depend: [Vault]
 
 commands:
   bp:
