@@ -1,5 +1,2 @@
-/out.jardesc
-bin/
-.classpath
-.project
-.settings/
+/.idea/workspace.xml
+/target
